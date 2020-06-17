@@ -32,14 +32,18 @@ CREATE TABLE climate_threshold (
     temp_MIN VARCHAR(255) NOT NULL,
     temp_MAX VARCHAR(255) NOT NULL,
     humid_MIN VARCHAR(255) NOT NULL,
-    humid_MAX VARCHAR(255) NOT NULL
+    humid_MAX VARCHAR(255) NOT NULL,
+    ph_MIN VARCHAR(255) NOT NULL,
+    ph_MAX VARCHAR(255) NOT NULL,
+    ec_MIN VARCHAR(255) NOT NULL,
+    ec_MAX VARCHAR(255) NOT NULL
 );
 
 -- TEST DATA: climate_threshold
 INSERT INTO climate_threshold
-    (temp_MIN, temp_MAX, humid_MIN, humid_MAX) 
+    (temp_MIN, temp_MAX, humid_MIN, humid_MAX, ph_MIN, ph_MAX, ec_MIN, ec_MAX) 
 VALUES
-    ('15', '40','20','99');
+    ('15', '40','20','99', '5.5', '6.5', '800', '1600');
 
 
 -- TABLE: climate_settings
@@ -104,7 +108,9 @@ VALUES
     ('Relay','Fan Controls', 15, 0),
     ('Relay','Pump Controls', 14, 0),
     ('Relay','Heater Controls', 25, 0),
-    ('Camera','Camera Module', 0, 0);
+    ('Camera','Camera Module', 0, 0),
+    ('Sensor','pH Probe', 23, 0),
+    ('Sensor','EC Probe', 22, 0);
 
 -- TABLE: relay_settings
 DROP TABLE IF EXISTS relay_settings;
@@ -195,37 +201,39 @@ CREATE TABLE grow_data (
     moisture_status VARCHAR(255) NULL,
     fan_status VARCHAR(255) NULL,
     pump_status VARCHAR(255) NULL,
+    ph VARCHAR(255) NULL,
+    ec VARCHAR(255) NULL,
     PRIMARY KEY (id)
 );
 
 -- TEST DATA: grow_data
 INSERT INTO grow_data
-    (date_time, temperature, humidity, light_status, moisture_status, fan_status, pump_status)
+    (date_time, temperature, humidity, light_status, moisture_status, fan_status, pump_status, ph, ec)
 VALUES
-    ('2019-03-20 00:00:00', 25, 75, True, True, True, False),
-    ('2019-03-20 01:00:00', 27, 88, True, True, True, False),
-    ('2019-03-20 02:00:00', 26, 84, True, True, True, False),
-    ('2019-03-20 03:00:00', 26, 80, True, True, True, False),
-    ('2019-03-20 04:00:00', 25, 77, True, True, True, False),
-    ('2019-03-20 05:00:00', 26, 78, True, True, True, False),
-    ('2019-03-20 06:00:00', 25, 75, True, True, True, False),
-    ('2019-03-20 07:00:00', 27, 76, True, True, True, False),
-    ('2019-03-20 08:00:00', 28, 80, True, True, True, False),
-    ('2019-03-20 09:00:00', 25, 75, True, True, True, False),
-    ('2019-03-20 10:00:00', 27, 81, True, True, True, False),
-    ('2019-03-20 11:00:00', 28, 84, True, True, True, False),
-    ('2019-03-20 12:00:00', 28, 83, True, True, True, False),
-    ('2019-03-20 13:00:00', 28, 82, True, True, True, False),
-    ('2019-03-20 14:00:00', 29, 88, True, True, True, False),
-    ('2019-03-20 15:00:00', 30, 90, True, True, True, False),
-    ('2019-03-20 16:00:00', 25, 75, True, True, True, False),
-    ('2019-03-20 17:00:00', 25, 80, True, True, True, False),
-    ('2019-03-20 18:00:00', 25, 79, True, True, True, False),
-    ('2019-03-20 19:00:00', 25, 78, True, True, True, False),
-    ('2019-03-20 20:00:00', 24, 77, True, True, True, False),
-    ('2019-03-20 21:00:00', 24, 74, True, True, True, False),
-    ('2019-03-20 22:00:00', 22, 73, True, True, True, False),
-    ('2019-03-20 23:00:00', 23, 72, True, True, True, False);
+    ('2019-03-20 00:00:00', 25, 75, True, True, True, False, 6.0, 1376),
+    ('2019-03-20 01:00:00', 27, 88, True, True, True, False, 6.1, 1368),
+    ('2019-03-20 02:00:00', 26, 84, True, True, True, False, 6.1, 1360),
+    ('2019-03-20 03:00:00', 26, 80, True, True, True, False, 6.0, 1352),
+    ('2019-03-20 04:00:00', 25, 77, True, True, True, False, 6.1, 1346),
+    ('2019-03-20 05:00:00', 26, 78, True, True, True, False, 6.0, 1338),
+    ('2019-03-20 06:00:00', 25, 75, True, True, True, False, 6.0, 1330),
+    ('2019-03-20 07:00:00', 27, 76, True, True, True, False, 6.0, 1322),
+    ('2019-03-20 08:00:00', 28, 80, True, True, True, False, 6.1, 1316),
+    ('2019-03-20 09:00:00', 25, 75, True, True, True, False, 6.0, 1308),
+    ('2019-03-20 10:00:00', 27, 81, True, True, True, False, 6.0, 1300),
+    ('2019-03-20 11:00:00', 28, 84, True, True, True, False, 6.1, 1292),
+    ('2019-03-20 12:00:00', 28, 83, True, True, True, False, 6.1, 1286),
+    ('2019-03-20 13:00:00', 28, 82, True, True, True, False, 6.1, 1278),
+    ('2019-03-20 14:00:00', 29, 88, True, True, True, False, 6.1, 1270),
+    ('2019-03-20 15:00:00', 30, 90, True, True, True, False, 6.2, 1262),
+    ('2019-03-20 16:00:00', 25, 75, True, True, True, False, 6.1, 1256),
+    ('2019-03-20 17:00:00', 25, 80, True, True, True, False, 6.2, 1248),
+    ('2019-03-20 18:00:00', 25, 79, True, True, True, False, 6.2, 1240),
+    ('2019-03-20 19:00:00', 25, 78, True, True, True, False, 6.2, 1232),
+    ('2019-03-20 20:00:00', 24, 77, True, True, True, False, 6.1, 1226),
+    ('2019-03-20 21:00:00', 24, 74, True, True, True, False, 6.2, 1218),
+    ('2019-03-20 22:00:00', 22, 73, True, True, True, False, 6.2, 1212),
+    ('2019-03-20 23:00:00', 23, 72, True, True, True, False, 6.3, 1208);
 
 
 -- TABLE: climate_history
@@ -236,37 +244,39 @@ CREATE TABLE climate_history (
     date_time DATETIME NOT NULL,
     temperature VARCHAR(255) DEFAULT NULL,
     humidity VARCHAR(255) DEFAULT NULL,
+    ph VARCHAR(255) DEFAULT NULL,
+    ec VARCHAR(255) DEFAULT NULL,
     PRIMARY KEY (id)
 );
 
 -- TEST DATA: climate_history
 INSERT INTO climate_history
-    (date_time, temperature, humidity)
+    (date_time, temperature, humidity, ph, ec)
 VALUES
-    ('2019-03-20 00:00:00', 25, 75),
-    ('2019-03-20 01:00:00', 27, 88),
-    ('2019-03-20 02:00:00', 26, 84),
-    ('2019-03-20 03:00:00', 26, 80),
-    ('2019-03-20 04:00:00', 25, 77),
-    ('2019-03-20 05:00:00', 26, 78),
-    ('2019-03-20 06:00:00', 25, 75),
-    ('2019-03-20 07:00:00', 27, 76),
-    ('2019-03-20 08:00:00', 28, 80),
-    ('2019-03-20 09:00:00', 25, 75),
-    ('2019-03-20 10:00:00', 27, 81),
-    ('2019-03-20 11:00:00', 28, 84),
-    ('2019-03-20 12:00:00', 28, 83),
-    ('2019-03-20 13:00:00', 28, 82),
-    ('2019-03-20 14:00:00', 29, 88),
-    ('2019-03-20 15:00:00', 30, 90),
-    ('2019-03-20 16:00:00', 25, 75),
-    ('2019-03-20 17:00:00', 25, 80),
-    ('2019-03-20 18:00:00', 25, 79),
-    ('2019-03-20 19:00:00', 25, 78),
-    ('2019-03-20 20:00:00', 24, 77),
-    ('2019-03-20 21:00:00', 24, 74),
-    ('2019-03-20 22:00:00', 22, 73),
-    ('2019-03-20 23:00:00', 23, 72);
+    ('2019-03-20 00:00:00', 25, 75, 6.0, 1376),
+    ('2019-03-20 01:00:00', 27, 88, 6.1, 1368),
+    ('2019-03-20 02:00:00', 26, 84, 6.1, 1360),
+    ('2019-03-20 03:00:00', 26, 80, 6.0, 1352),
+    ('2019-03-20 04:00:00', 25, 77, 6.1, 1346),
+    ('2019-03-20 05:00:00', 26, 78, 6.0, 1338),
+    ('2019-03-20 06:00:00', 25, 75, 6.0, 1330),
+    ('2019-03-20 07:00:00', 27, 76, 6.0, 1322),
+    ('2019-03-20 08:00:00', 28, 80, 6.1, 1316),
+    ('2019-03-20 09:00:00', 25, 75, 6.0, 1308),
+    ('2019-03-20 10:00:00', 27, 81, 6.0, 1300),
+    ('2019-03-20 11:00:00', 28, 84, 6.1, 1292),
+    ('2019-03-20 12:00:00', 28, 83, 6.1, 1286),
+    ('2019-03-20 13:00:00', 28, 82, 6.1, 1278),
+    ('2019-03-20 14:00:00', 29, 88, 6.1, 1270),
+    ('2019-03-20 15:00:00', 30, 90, 6.2, 1262),
+    ('2019-03-20 16:00:00', 25, 75, 6.1, 1256),
+    ('2019-03-20 17:00:00', 25, 80, 6.2, 1248),
+    ('2019-03-20 18:00:00', 25, 79, 6.2, 1240),
+    ('2019-03-20 19:00:00', 25, 78, 6.2, 1232),
+    ('2019-03-20 20:00:00', 24, 77, 6.1, 1226),
+    ('2019-03-20 21:00:00', 24, 74, 6.2, 1218),
+    ('2019-03-20 22:00:00', 22, 73, 6.2, 1212),
+    ('2019-03-20 23:00:00', 23, 72, 6.3, 1208);
 
 
 -- TABLE: groups
