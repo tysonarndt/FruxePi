@@ -38,9 +38,11 @@ Using the browser-based dashboard, users can easily monitor the status of their 
 **The basic functionalies of the FruxePi include:**
 
 - Monitor your growing climate (temperature and humidity).
-- Chart visualizations for historical temperature and humidity data.
+- Chart visualizations for historical temperature, humidity, pH and EC data.
 - Manage crops by tracking progress and time to harvest.
 - Monitor soil moisture.
+- Monitor pH levels in water reservoir (for hydroponics)
+- Monitor EC levels in water reservoir (for hydroponics)
 - Camera monitoring with periodic and manual photo capture.
 - Manual and scheduled lighting control.
 - Fan control both manually and exception based (temperature or humidity thresholds).
