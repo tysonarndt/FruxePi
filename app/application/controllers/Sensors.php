@@ -15,6 +15,8 @@
 			$this->load->library('form_validation');
 			$this->load->model('Dashboard_model');
 			$this->load->model('Moisture_model');
+			$this->load->model('Ph_model');
+			$this->load->model('Ec_model');
 			$this->load->model('Pump_model');
 			$this->load->model('Lights_model');
 			$this->load->model('Fan_model');
@@ -838,6 +840,198 @@
 			if ($this->ion_auth->logged_in())
 			{
 				$diagnostic_callback = $this->Moisture_model->moistureDiagnostics();
+				print_r($diagnostic_callback); 
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		/**
+		* pH Probe Settings
+		* Set and modify the pH probe settings.
+		* 
+		* Functions: 
+		* - Enable\Disable pH probe
+		* - Set/Modify the pH probe GPIO pin
+		* - pH probe dignostics 
+		* 
+		* @url /technical/ph
+		*/
+		public function phSettings()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				// Page Meta
+				$data['title'] = 'pH Probe Settings';
+
+				// Data Fetch
+				$data['user_info'] = $this->Dashboard_model->get_user_info();
+				$data['GPIO'] = $this->Ph_model->getGPIO();
+				$data['activation_state'] = $this->Ph_model->phActivationState();
+
+				// Page View
+				$this->load->view('technical/ph', $data);
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		// Edit pH GPIO
+		public function editPhGPIO()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				$this->Ph_model->setGPIO();
+		
+				redirect($_SERVER['HTTP_REFERER']);
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		// Enable pH Sensor
+		public function enablePhSensor()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				$this->Ph_model->enablePhSensor();
+		
+				redirect($_SERVER['HTTP_REFERER']);
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		// Disable pH Sensor
+		public function disablePhSensor()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				$this->Ph_model->disablePhSensor();
+		
+				redirect($_SERVER['HTTP_REFERER']);
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		// pH Probe Diagnostics
+		public function phDiagnostics()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				$diagnostic_callback = $this->Ph_model->phDiagnostics();
+				print_r($diagnostic_callback); 
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		/**
+		* EC Probe Settings
+		* Set and modify the pH probe settings.
+		* 
+		* Functions: 
+		* - Enable\Disable EC probe
+		* - Set/Modify the EC probe GPIO pin
+		* - EC probe dignostics 
+		* 
+		* @url /technical/ec
+		*/
+		public function ecSettings()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				// Page Meta
+				$data['title'] = 'EC Probe Settings';
+
+				// Data Fetch
+				$data['user_info'] = $this->Dashboard_model->get_user_info();
+				$data['GPIO'] = $this->Ec_model->getGPIO();
+				$data['activation_state'] = $this->Ec_model->ecActivationState();
+
+				// Page View
+				$this->load->view('technical/ec', $data);
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		// Edit EC GPIO
+		public function editEcGPIO()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				$this->Ec_model->setGPIO();
+		
+				redirect($_SERVER['HTTP_REFERER']);
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		// Enable EC Sensor
+		public function enableEcSensor()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				$this->Ec_model->enableEcSensor();
+		
+				redirect($_SERVER['HTTP_REFERER']);
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		// Disable EC Sensor
+		public function disableEcSensor()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				$this->Ec_model->disableEcSensor();
+		
+				redirect($_SERVER['HTTP_REFERER']);
+			
+			} else {
+				// Redirect to login.
+				redirect('/login');
+			}
+		}
+
+		// EC Probe Diagnostics
+		public function ecDiagnostics()
+		{
+			// Redirect if user not logged in, otherwise display the page.
+			if ($this->ion_auth->logged_in())
+			{
+				$diagnostic_callback = $this->Ec_model->ecDiagnostics();
 				print_r($diagnostic_callback); 
 			
 			} else {

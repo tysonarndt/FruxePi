@@ -143,3 +143,16 @@ $route['technical/moisture/disable'] = 'sensors/disableMoistureSensor';
 $route['technical/moisture/edit/GPIO'] = 'sensors/editMoistureGPIO';
 $route['technical/moisture/diagnostics'] = 'sensors/moistureDiagnostics';
 
+// pH Probe
+$route['technical/ph'] = 'sensors/phSettings';
+$route['technical/ph/enable'] = 'sensors/enablePhSensor';
+$route['technical/ph/disable'] = 'sensors/disablePhSensor';
+$route['technical/ph/edit/GPIO'] = 'sensors/editPhGPIO';
+$route['technical/ph/diagnostics'] = 'sensors/phDiagnostics';
+
+// EC Probe
+$route['technical/ec'] = 'sensors/ecSettings';
+$route['technical/ec/enable'] = 'sensors/enableEcSensor';
+$route['technical/ec/disable'] = 'sensors/disableEcSensor';
+$route['technical/ec/edit/GPIO'] = 'sensors/editEcGPIO';
+$route['technical/ec/diagnostics'] = 'sensors/ecDiagnostics';

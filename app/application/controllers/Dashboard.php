@@ -23,6 +23,8 @@
 			$this->load->model('Climate_model');
 			$this->load->model('Camera_model');
 			$this->load->model('Moisture_model');
+			$this->load->model('Ph_model');
+			$this->load->model('Ec_model');
 			$this->load->model('Scheduler_model');
 			$this->load->helper('utility');
 		}
@@ -65,6 +67,13 @@
 				$data['cropConditions'] = $this->Dashboard_model->get_cropConditions();
 				$data['soil_status'] = $this->Moisture_model->readMoistureSensor();
 
+				$data['ph'] = $this->Ph_model->readPhSensor();
+				$data['ec'] = $this->Ec_model->readEcSensor();
+				$data['waterConditions'] = $this->Dashboard_model->get_waterConditions();
+
+				$data['ph_chart'] = $this->Dashboard_model->get_ph_chart_data();
+				$data['ec_chart'] = $this->Dashboard_model->get_ec_chart_data();
+
 				// Page View
 				$this->load->view('dashboard/index', $data);
 			
@@ -87,7 +96,8 @@
 				$lightsOFF = $this->Lights_model->setLightTimerOFF();
 				
 				// Edit lighting CRON
-                $this->Scheduler_model->editLightsCRON($lightsON, $lightsOFF);
+				$relayType = $this->Lights_model->getRelayType();
+                $this->Scheduler_model->editLightsCRON($lightsON, $lightsOFF, $relayType);
 
 				// Set Fan schedule
 				$this->Fan_model->setFanSchedule();

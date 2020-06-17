@@ -55,6 +55,42 @@
 		}
 
 		/**
+		 * Get pH
+		 * Get the latest ph reading from the database as an unformatted float.
+		 * @return float
+		 */
+		public function getPh()
+		{
+			$this->db->select("ph");
+			$this->db->from("grow_data");
+			$this->db->order_by("id","DESC");
+			$this->db->limit(1);
+
+			$query = $this->db->get();
+			$ph = $query->result()[0]->ph;
+
+			return $ph;
+		}
+
+		/**
+		 * Get EC
+		 * Get the latest ec reading from the database as an unformatted float.
+		 * @return float
+		 */
+		public function getEc()
+		{
+			$this->db->select("ec");
+			$this->db->from("grow_data");
+			$this->db->order_by("id","DESC");
+			$this->db->limit(1);
+
+			$query = $this->db->get();
+			$ec = $query->result()[0]->ec;
+
+			return $ec;
+		}
+
+		/**
 		* Set Climate Sensor GPIO Pin
 		* Set the GPIO Pin associated with the climate sensor.
 		* @return void
@@ -190,14 +226,22 @@
 					"temp_MIN" => fahrenheitToCelsius($this->input->post('temperatureLOW')),
 					"temp_MAX" => fahrenheitToCelsius($this->input->post('temperatureHIGH')),
 					"humid_MIN" => $this->input->post('humidityLOW'),
-					"humid_MAX" => $this->input->post('humidityHIGH')
+					"humid_MAX" => $this->input->post('humidityHIGH'),
+					"ph_MIN" => $this->input->post('phLOW'),
+					"ph_MAX" => $this->input->post('phHIGH'),
+					"ec_MIN" => $this->input->post('ecLOW'),
+					"ec_MAX" => $this->input->post('ecHIGH')
 				);
 			} else {
 				$data = array(
 					"temp_MIN" => $this->input->post('temperatureLOW'),
 					"temp_MAX" => $this->input->post('temperatureHIGH'),
 					"humid_MIN" => $this->input->post('humidityLOW'),
-					"humid_MAX" => $this->input->post('humidityHIGH')
+					"humid_MAX" => $this->input->post('humidityHIGH'),
+					"ph_MIN" => $this->input->post('phLOW'),
+					"ph_MAX" => $this->input->post('phHIGH'),
+					"ec_MIN" => $this->input->post('ecLOW'),
+					"ec_MAX" => $this->input->post('ecHIGH')
 				);
 			}
 

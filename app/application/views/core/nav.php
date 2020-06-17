@@ -24,12 +24,14 @@
                 <li class="nav-item-sub"><a href="<?php echo base_url("technical/fans"); ?>" title="Fan Settings">Fans</a></li>
                 <li class="nav-item-sub"><a href="<?php echo base_url("technical/pump"); ?>" title="Pump Settings">Pump</a></li>
                 <li class="nav-item-sub"><a href="<?php echo base_url("technical/moisture"); ?>" title="Moisture Settings">Moisture</a></li>
+                <li class="nav-item-sub"><a href="<?php echo base_url("technical/ph"); ?>" title="pH Settings">pH</a></li>
+                <li class="nav-item-sub"><a href="<?php echo base_url("technical/ec"); ?>" title="EC Settings">EC</a></li>
                 <!-- <li class="nav-item-sub"><a href="<?php echo base_url("technical/heater"); ?>" title="Heater Settings">Heater</a></li> -->
                 <li class="nav-item-sub"><a href="<?php echo base_url("technical/camera"); ?>" title="Camera Settings">Camera</a></li>
             </ul>
         </li>
 
-         <!-- Users -->
+        <!-- Users -->
         <?php if ($this->ion_auth->is_admin()): ?>
         <li class="nav-item">
             <a href="<?php echo base_url("users"); ?>" title="Users">Users</a>

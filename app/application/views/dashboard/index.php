@@ -268,12 +268,64 @@
                         <!-- Conditions -->
                         <?php if ($sensor_state['climate_state'] == 1): ?>
                         <div class="roomStats col-6 col-md-2 col-sm-6 text-left p-0">
-                          CONDITIONS
+                          ENVIRONMENT
                           <?php if($cropConditions > 80 ): ?>
                             <i class="fas fa-check-circle light-green mr-2"></i>
                           <?php endif; ?>
                           <div class="font-size-40 medium-grey">
                             <?php echo $cropConditions; ?>
+                            <span class="font-size-30">%</span>
+                          </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- pH -->
+                        <?php if ($sensor_state['ph_state'] == 1): ?>
+                        <div class="roomStats col-6 col-md-2 col-sm-6 text-left p-0">
+                          pH
+                          <?php if ($cropThresholds['ph'] == 'Y'): ?>
+                          <i class="fas fa-check-circle light-green mr-2"></i>
+                          <?php elseif($cropThresholds['ph'] == "N"): ?>
+                            <?php if($cropThresholds['phStatus'] == "H"): ?>
+                              <i class="fas fa-arrow-up mr-3"></i>
+                            <?php elseif($cropThresholds['phStatus'] == "L"): ?>
+                              <i class="fas fa-arrow-down mr-3"></i>
+                            <?php endif; ?>
+                          <?php endif; ?>
+
+                          <div class="font-size-40 medium-grey">
+                              <?php echo round($grow_data['ph'], 1); ?>
+                              <span class="font-size-30">pH</span>
+                          </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- EC -->
+                        <?php if ($sensor_state['ec_state'] == 1): ?>
+                        <div class="roomStats col-6 col-md-2 col-sm-6 text-left p-0">
+                          EC
+                          <?php if ($ec == 0): ?>
+                          <i class="fas fa-check-circle light-green mr-2"></i>
+                          <?php elseif ($ec == 1): ?>
+                          <i class="fas fa-minus-circle light-red mr-2"></i>
+                          <?php endif; ?>
+
+                          <div class="font-size-40 medium-grey">
+                              <?php echo round($grow_data['ec'], 1); ?>
+                              <span class="font-size-30">ppm</span>
+                          </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Water Conditions -->
+                        <?php if ($sensor_state['ph_state'] == 1 OR $sensor_state['ec_state'] == 1): ?>
+                        <div class="roomStats col-6 col-md-2 col-sm-6 text-left p-0">
+                          WATER
+                          <?php if($waterConditions > 80 ): ?>
+                            <i class="fas fa-check-circle light-green mr-2"></i>
+                          <?php endif; ?>
+                          <div class="font-size-40 medium-grey">
+                            <?php echo $waterConditions; ?>
                             <span class="font-size-30">%</span>
                           </div>
                         </div>
@@ -328,6 +380,15 @@
                         <canvas id="canvas"></canvas>
                       </div>
                       <?php endif; ?>
+                      <?php if ($sensor_state['ph_state'] == 1 OR $sensor_state['ec_state'] == 1): ?>
+                      <div class="col-md-9 col-xs-6 text-left p-0">
+                          <h4>Water Conditions <small class="text-muted font-size-14">Last 24 Hours</small></h4>
+                        </div>
+                      <div class="chart" style="width:100%;">
+                        <canvas id="canvasWater"></canvas>
+                      </div>
+                      <?php endif; ?>
+
                     </div>
 
                     <!-- Journal Tab -->
@@ -507,6 +568,73 @@
                                         </div>
                                       </div>
                                     </div>
+
+                                    <!-- pH Threshold -->
+                                    <div class="col-sm-6 pt-1">
+                                      <h5>pH</h5>
+                                      <div class="row">
+                                        <div class="col-6">
+                                          <div class="input-group mb-2">
+                                                <?php if(!empty($climate_threshold['ph_MIN'])): ?>
+                                                <input type="text" class="form-control" name="phLOW" value="<?php echo $climate_threshold['ph_MIN']; ?>">
+                                                <?php else: ?>
+                                                <input type="text" class="form-control" name="phLOW" value="" placeholder="Min pH">
+                                                <?php endif; ?>
+                                                <div class="input-group-append">
+                                                      <div class="input-group-text">pH</div>
+                                                </div>
+                                          </div>
+                                          <small class="form-text text-muted">Set minimum pH level</small>
+                                        </div>
+                                        <div class="col-6">
+                                          <div class="input-group mb-2">
+                                                <?php if(!empty($climate_threshold['ph_MAX'])): ?>
+                                                <input type="text" class="form-control" name="phHIGH" value="<?php echo $climate_threshold['ph_MAX']; ?>">
+                                                <?php else: ?>
+                                                <input type="text" class="form-control" name="phHIGH" value="" placeholder="Max pH">
+                                                <?php endif; ?>
+                                                <div class="input-group-append">
+                                                      <div class="input-group-text">pH</div>
+                                                </div>
+                                          </div>
+                                          <small class="form-text text-muted">Set maximum pH level</small>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <!-- EC Threshold -->
+                                    <div class="col-sm-6 pt-1">
+                                      <h5>EC</h5>
+                                      <div class="row">
+                                        <div class="col-6">
+                                          <div class="input-group mb-2">
+                                                <?php if(!empty($climate_threshold['ec_MIN'])): ?>
+                                                <input type="text" class="form-control" name="ecLOW" value="<?php echo $climate_threshold['ec_MIN']; ?>">
+                                                <?php else: ?>
+                                                <input type="text" class="form-control" name="humidityLOW" value="" placeholder="Min EC">
+                                                <?php endif; ?>
+                                                <div class="input-group-append">
+                                                      <div class="input-group-text">ppm</div>
+                                                </div>
+                                          </div>
+                                          <small class="form-text text-muted">Set minimum EC</small>
+                                        </div>
+                                        <div class="col-6">
+                                          <div class="input-group mb-2">
+                                                <?php if(!empty($climate_threshold['humid_MAX'])): ?>
+                                                <input type="text" class="form-control" name="ecHIGH" value="<?php echo $climate_threshold['ec_MAX']; ?>">
+                                                <?php else: ?>
+                                                <input type="text" class="form-control" name="ecHIGH" value="" placeholder="Max EC">
+                                                <?php endif; ?>
+                                                <div class="input-group-append">
+                                                      <div class="input-group-text">ppm</div>
+                                                </div>
+                                          </div>
+                                          <small class="form-text text-muted">Set maximum EC</small>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
                               </div>
                               <hr>
                               <?php endif; ?>

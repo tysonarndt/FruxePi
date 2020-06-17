@@ -13,6 +13,8 @@
 			$this->load->library('ion_auth');
 			$this->load->model('Climate_model');
 			$this->load->model('Lights_model');
+			$this->load->model('Ph_model');
+			$this->load->model('Ec_model');
 		}
 
 		// Get User Info
@@ -55,6 +57,8 @@
 				"moisture_status" => $grow_data["moisture_status"],
 				"fan_status" => $grow_data["fan_status"],
 				"pump_status" => $grow_data["pump_status"],
+				"ph" => $grow_data["ph"],
+				"ec" => $grow_data["ec"],
 			);
 
 			return $data;
@@ -70,7 +74,9 @@
 				"fan_state" => $this->Fan_model->fanActivationState(),
 				"lights_state" => $this->Lights_model->lightsActivationState(),
 				"moisture_state" => $this->Moisture_model->moistureActivationState(),
-				"pump_state" => $this->Pump_model->pumpActivationState()
+				"pump_state" => $this->Pump_model->pumpActivationState(),
+				"ph_state" => $this->Ph_model->phActivationState(),
+				"ec_state" => $this->Ec_model->ecActivationState()
 			);
 
 			return $data;
@@ -161,6 +167,57 @@
 			return $output;
 		}
 
+		// Get 24-hr pH chart data
+		public function get_ph_chart_data()
+		{
+
+			$this->db->select("*");
+			$this->db->from("climate_history");
+			$this->db->order_by("id","DESC");
+			$this->db->limit(24);
+
+			$query = $this->db->get();
+			$results = $query->result_array();
+
+			$output = "";
+			$count = 1;
+			foreach($results as $result) {
+				if ($count == count($results)) {
+					$output .= $result["ph"];
+				} else {
+					$output .= $result["ph"] . ", ";
+				}
+				$count++;
+			}
+
+			return $output;
+		}
+
+		// Get 24-hr ec chart data
+		public function get_ec_chart_data()
+		{
+			$this->db->select("*");
+			$this->db->from("climate_history");
+			$this->db->order_by("id","DESC");
+			$this->db->limit(24);
+
+			$query = $this->db->get();
+			$results = $query->result_array();
+
+			$output = "";
+			$count = 1;
+			foreach($results as $result) {
+				if ($count == count($results)) {
+					$output .= $result["ec"];
+				} else {
+					$output .= $result["ec"] . ", ";
+				}
+				$count++;
+			}
+
+			return $output;
+		}
+
 		// Get daily High temperature
 		public function get_temperature_dailyHIGH()
 		{
@@ -214,11 +271,19 @@
 			$data = array();
 			$curTemp = $this->Climate_model->getTemperature();
 			$tempHigh = $climate_threshold['temp_MAX'];
-			$tempLow = $climate_threshold['temp_MIN'];
+			$tempLow = $climate_threshold['temp_MIN'];			
 
 			$curHumid = $this->Climate_model->getHumidity();
 			$humidHigh = $climate_threshold['humid_MAX'];
 			$humidLow = $climate_threshold['humid_MIN'];
+
+			$curPh = $this->Climate_model->getPh();
+			$phHigh = $climate_threshold['ph_MAX'];
+			$phLow = $climate_threshold['ph_MIN'];
+
+			$curEc = $this->Climate_model->getEc();
+			$ecHigh = $climate_threshold['ec_MAX'];
+			$ecLow = $climate_threshold['ec_MIN'];
 
 			// Check Temperature Range
 			if (($curTemp >= $tempLow) && ($curTemp <= $tempHigh))
@@ -246,6 +311,34 @@
 				} elseif($curHumid >= $humidHigh) {
 					$data['humidity'] = 'N';
 					$data['humidStatus'] = 'H';
+				}
+			}
+
+			// Check pH Range
+			if (($curPh >= $phLow) && ($curPh <= $phHigh))
+			{
+				$data['ph'] = 'Y';
+			} else {
+				if ($curPh <= $phLow) {
+					$data['ph'] = 'N';
+					$data['phStatus'] = 'L';
+				} elseif($curPh >= $phHigh) {
+					$data['ph'] = 'N';
+					$data['phStatus'] = 'H';
+				}
+			}
+
+			// Check EC Range
+			if (($curEc >= $ecLow) && ($curEc <= $ecHigh))
+			{
+				$data['ec'] = 'Y';
+			} else {
+				if ($curEc  <= $ecLow) {
+					$data['ec'] = 'N';
+					$data['ecStatus'] = 'L';
+				} elseif($curEc >= $ecHigh) {
+					$data['ec'] = 'N';
+					$data['ecStatus'] = 'H';
 				}
 			}
 
@@ -286,6 +379,43 @@
 				return $cropConditions;
 			} else {
 				return $cropConditions = 0;
+			}
+
+		}
+
+		// Current Water Conditions
+		public function get_waterConditions()
+		{
+			
+			$sql = "SELECT * FROM grow_data WHERE DATE(date_time) = CURDATE() ORDER BY date_time DESC";
+			$query = $this->db->query($sql);
+			$tempData = $query->result_array();
+
+			// Grow Room Thresholds
+			$climate_threshold = $this->Climate_model->getClimateThreshold();
+			$phHigh = $climate_threshold['ph_MAX'];
+			$phLow = $climate_threshold['ph_MIN'];
+			$ecHigh = $climate_threshold['ec_MAX'];
+			$ecLow = $climate_threshold['ec_MIN'];
+
+			// Loop through tempData
+			$total_records = sizeof($tempData);
+			$positive_records = 0;
+			
+			foreach ($tempData as $item) {
+				$ph = $item['ph'];
+				$ec = $item['ec'];
+				if (($ph >= $phLow) && ($ph <= $phHigh) && ($ec >= $ecLow) && ($humid <= $ecHigh)) {
+					$positive_records++;
+				}
+			}
+
+			// Calculate Ratio check for zero division
+			if ($positive_records != 0 && $total_records != 0) {
+				$waterConditions = round(($positive_records / $total_records) * 100);
+				return $waterConditions;
+			} else {
+				return $waterConditions = 0;
 			}
 
 		}

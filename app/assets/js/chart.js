@@ -51,6 +51,95 @@ window.onload = function() {
 			}
 		}
 	});
+	var ctx = document.getElementById('canvasWater').getContext('2d');
+	window.myLine = Chart.Line(ctx, {
+		data: lineChartData2,
+		options: {
+			
+			responsive: true,
+			hoverMode: 'index',
+			stacked: false,
+			title: {
+				display: false,
+				text: 'pH \ EC Chart'
+			},
+			scales: {
+				yAxes: [{
+					type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+					display: true,
+					position: 'left',
+					id: 'y-axis-3',
+				}, {
+					type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+					display: true,
+					position: 'right',
+					id: 'y-axis-4',
+
+					// grid line settings
+					gridLines: {
+						drawOnChartArea: false, // only want the grid lines for one axis to show up
+					},
+				}],
+				xAxes: [{
+					ticks: {
+					  // Make labels vertical
+					  // https://stackoverflow.com/questions/28031873/make-x-label-horizontal-in-chartjs
+					  minRotation: 45,
+			
+					  // Limit number of labels
+					  // https://stackoverflow.com/questions/22064577/limit-labels-number-on-chartjs-line-chart
+					  autoSkip: false,
+					  maxTicksLimit: 12}
+					}],
+			}
+		}
+	});
 };
+// Chart Settings
+//window.onload = function() {
+//	var context = document.getElementById('Watercanvas').getContext('2d');
+//	window.myLine = Chart.Line(context, {
+//		data: lineChartData2,
+//		options: {
+//			
+//			responsive: true,
+//			hoverMode: 'index',
+//			stacked: false,
+//			title: {
+//				display: false,
+//				text: 'pH \ EC Chart'
+//			},
+//			scales: {
+//				yAxes: [{
+//					type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+//					display: true,
+//					position: 'left',
+//					id: 'y-axis-3',
+//				}, {
+//					type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+//					display: true,
+//					position: 'right',
+//					id: 'y-axis-4',
+//
+//					// grid line settings
+//					gridLines: {
+//						drawOnChartArea: false, // only want the grid lines for one axis to show up
+//					},
+//				}],
+//				xAxes: [{
+//					ticks: {
+//					  // Make labels vertical
+//					  // https://stackoverflow.com/questions/28031873/make-x-label-horizontal-in-chartjs
+//					  minRotation: 45,
+//			
+//					  // Limit number of labels
+//					  // https://stackoverflow.com/questions/22064577/limit-labels-number-on-chartjs-line-chart
+//					  autoSkip: false,
+//					  maxTicksLimit: 12}
+//					}],
+//			}
+//		}
+//	});
+//};
 
 

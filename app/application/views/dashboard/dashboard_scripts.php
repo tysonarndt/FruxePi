@@ -78,5 +78,23 @@
             yAxisID: 'y-axis-2'
         }]
     };
+    var lineChartData2 = {
+        labels: [<?php echo $chart_legend; ?>],
+        datasets: [{
+            label: 'pH',
+            borderColor: window.chartColors.red,
+            backgroundColor: window.chartColors.red,
+            fill: false,
+            data: [<?php echo $ph_chart; ?>],
+            yAxisID: 'y-axis-3',
+        }, {
+            label: 'EC (ppm)',
+            borderColor: window.chartColors.blue,
+            backgroundColor: window.chartColors.blue,
+            fill: false,
+            data: [<?php echo $ec_chart; ?>],
+            yAxisID: 'y-axis-4'
+        }]
+    };
 
 </script>
